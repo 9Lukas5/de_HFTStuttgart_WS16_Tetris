@@ -14,7 +14,7 @@ public class Tetris
     static String       version     = "v.1.0.0";
     
     static Terminal     terminal    = TerminalFacade.createTerminal(System.in, System.out, Charset.forName("UTF8"));
-    static Spielfeld    spielfeld;//   = new Spielfeld(20, 10, 2, terminal);
+    static Spielfeld    spielfeld;
     static Scanner      in          = new Scanner(System.in);
     static Tetromino    akt_Stein;
     static Tetromino    next_Stein  = new Tetromino_I();
@@ -34,15 +34,7 @@ public class Tetris
 		Startbildschirm.starteSpiel();
         music.startBackgroundMusik();
         
-        try
-        {
-            spielfeld = new Spielfeld(Integer.valueOf(args[0]), Integer.valueOf(args[1]), Integer.valueOf(args[2]), terminal);
-        }catch (Exception e)
-        {
-            // ignoriere diesen Fall, dann bleibt das Spielffeld auf
-            // Standardgroeße
-            spielfeld   = new Spielfeld(20, 10, 2, terminal);
-        }
+        spielfeld = new Spielfeld(20, 10, 2, terminal);
         
         neuerStein();
         neuerStein();
