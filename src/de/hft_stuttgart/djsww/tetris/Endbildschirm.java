@@ -213,6 +213,12 @@ public class Endbildschirm
             }
         }
         
+        if (highscores.size() == 0)
+        {
+            highscores.add(spielfeld.punktestand);
+                namen.add(name);
+        }
+        
         x_Offset = 45;
         y_Offset =  2;
         
