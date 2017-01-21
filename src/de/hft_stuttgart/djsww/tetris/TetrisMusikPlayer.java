@@ -6,74 +6,64 @@ import javax.sound.sampled.*;
 
 public class TetrisMusikPlayer
 {
-	Clip background_Clip;
-    
-	
-	public TetrisMusikPlayer()
-	{
+
+    Clip background_Clip;
+
+    public TetrisMusikPlayer()
+    {
         try
-		{
-			InputStream resource_Path = getClass().getResourceAsStream("music/background.wav");
-            
-            AudioInputStream background_Stream = AudioSystem.getAudioInputStream(new BufferedInputStream(resource_Path));
-            AudioFormat background_Format = background_Stream.getFormat();
-            DataLine.Info background_Info = new DataLine.Info(Clip.class, background_Format);
-            
-			background_Clip = (Clip) AudioSystem.getLine(background_Info);
-			background_Clip.open(background_Stream);
-            
-            /*
-            
-            
-            File background_file = new File("music/foreground.wav");
-            */
-            
-		} catch (Exception e)
-		{
-			System.out.println("1");
-			e.printStackTrace();
-		}
-	}
-	
-	public void startBackgroundMusik()
-	{
-		try
         {
-            background_Clip.loop(Clip.LOOP_CONTINUOUSLY);
-            //background_Clip.start();
-        }catch (Exception e)
+            InputStream         resource_Path       = getClass().getResourceAsStream("music/background.wav");
+            AudioInputStream    background_Stream   = AudioSystem.getAudioInputStream(new BufferedInputStream(resource_Path));
+            AudioFormat         background_Format   = background_Stream.getFormat();
+            DataLine.Info       background_Info     = new DataLine.Info(Clip.class, background_Format);
+
+            background_Clip = (Clip) AudioSystem.getLine(background_Info);
+            background_Clip.open(background_Stream);
+
+        } catch (Exception e)
         {
             e.printStackTrace();
         }
-	}
-    
+    }
+
+    public void startBackgroundMusik()
+    {
+        try
+        {
+            background_Clip.loop(Clip.LOOP_CONTINUOUSLY);
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
     public void stopBackgroundMusik()
     {
         try
         {
             background_Clip.stop();
-        }catch (Exception e)
+        } catch (Exception e)
         {
             e.printStackTrace();
         }
     }
-    
+
     public void playSuccess()
     {
         Clip success_Clip = null;
         try
         {
-            InputStream resource_Path = getClass().getResourceAsStream("music/line_complete.wav");
-            AudioInputStream success_Stream = AudioSystem.getAudioInputStream(new BufferedInputStream(resource_Path));
-            AudioFormat success_Format = success_Stream.getFormat();
-            DataLine.Info success_Info = new DataLine.Info(Clip.class, success_Format);
-            
-			
+            InputStream         resource_Path   = getClass().getResourceAsStream("music/line_complete.wav");
+            AudioInputStream    success_Stream  = AudioSystem.getAudioInputStream(new BufferedInputStream(resource_Path));
+            AudioFormat         success_Format  = success_Stream.getFormat();
+            DataLine.Info       success_Info    = new DataLine.Info(Clip.class, success_Format);
+
             success_Clip = (Clip) AudioSystem.getLine(success_Info);
-			success_Clip.open(success_Stream);
-        
-        success_Clip.start();}
-        catch (Exception e)
+            success_Clip.open(success_Stream);
+            success_Clip.start();
+
+        } catch (Exception e)
         {
             e.printStackTrace();
         }
