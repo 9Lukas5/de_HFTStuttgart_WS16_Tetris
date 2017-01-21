@@ -7,7 +7,8 @@ import javax.sound.sampled.*;
 public class TetrisMusikPlayer
 {
 
-    Clip background_Clip;
+    Clip    background_Clip;
+    boolean mute            = false;
 
     public TetrisMusikPlayer()
     {
@@ -29,43 +30,68 @@ public class TetrisMusikPlayer
 
     public void startBackgroundMusik()
     {
-        try
+        if (!mute)
         {
-            background_Clip.loop(Clip.LOOP_CONTINUOUSLY);
-        } catch (Exception e)
-        {
-            e.printStackTrace();
+            try
+            {
+                background_Clip.loop(Clip.LOOP_CONTINUOUSLY);
+            } catch (Exception e)
+            {
+                e.printStackTrace();
+            }
         }
     }
 
     public void stopBackgroundMusik()
     {
-        try
+        if (!mute)
         {
-            background_Clip.stop();
-        } catch (Exception e)
-        {
-            e.printStackTrace();
+            try
+            {
+                background_Clip.stop();
+            } catch (Exception e)
+            {
+                e.printStackTrace();
+            }
         }
     }
 
     public void playSuccess()
     {
-        Clip success_Clip = null;
-        try
+        if (!mute)
         {
-            InputStream         resource_Path   = getClass().getResourceAsStream("music/line_complete.wav");
-            AudioInputStream    success_Stream  = AudioSystem.getAudioInputStream(new BufferedInputStream(resource_Path));
-            AudioFormat         success_Format  = success_Stream.getFormat();
-            DataLine.Info       success_Info    = new DataLine.Info(Clip.class, success_Format);
+            Clip success_Clip = null;
+            try
+            {
+                InputStream         resource_Path   = getClass().getResourceAsStream("music/line_complete.wav");
+                AudioInputStream    success_Stream  = AudioSystem.getAudioInputStream(new BufferedInputStream(resource_Path));
+                AudioFormat         success_Format  = success_Stream.getFormat();
+                DataLine.Info       success_Info    = new DataLine.Info(Clip.class, success_Format);
 
-            success_Clip = (Clip) AudioSystem.getLine(success_Info);
-            success_Clip.open(success_Stream);
-            success_Clip.start();
+                success_Clip = (Clip) AudioSystem.getLine(success_Info);
+                success_Clip.open(success_Stream);
+                success_Clip.start();
 
-        } catch (Exception e)
+            } catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void unMute()
+    {
+        if (!mute)
         {
-            e.printStackTrace();
+            stopBackgroundMusik();
+            mute = true;
+            return;
+        }
+
+        if (mute)
+        {
+            mute = false;
+            startBackgroundMusik();
         }
     }
 }

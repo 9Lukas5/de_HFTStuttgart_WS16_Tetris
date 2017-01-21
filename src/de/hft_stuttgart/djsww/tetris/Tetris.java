@@ -76,6 +76,11 @@ public class Tetris
                     pause();
                 }
 
+                if (Character.toUpperCase(eingabe.getCharacter()) == 'M')
+                {
+                    music.unMute();
+                }
+
                 if (eingabe.getKind() == Key.Kind.ArrowUp)
                 {
                     dreheStein();
