@@ -8,44 +8,46 @@ import java.util.LinkedList;
 public class Startbildschirm
 {
 
-    static LinkedList<Zelle[]> logo         = new LinkedList<>();
-    static LinkedList<Zelle[]> logo_Klein   = new LinkedList<>();
+    static LinkedList<Zelle[]> logo         = new LinkedList<>();   // big HFT-logo displayed and moved on program start
+    static LinkedList<Zelle[]> logo_Klein   = new LinkedList<>();   // small HFT-logo displayed during ingame on the right side
 
     public static void starteSpiel()
     {
         // lokale Variablen
         Key eingabe;
 
-        initLogo();
-        zeichne();
+        initLogo(); // init big logo
+        zeichne();  // animate logo
 
         while (true)
         {
-            eingabe = terminal.readInput();
+            eingabe = terminal.readInput(); // get input
 
-            if (eingabe != null)
+            if (eingabe != null)            // check if an input was made
             {
-                if (eingabe.getKind() == Key.Kind.Enter)
+                if (eingabe.getKind() == Key.Kind.Enter)    // if enter
                 {
-                    ladeBildschirm();
-                    break;
+                    ladeBildschirm();   // show loading screen
+                    break;              // and leave loop
                 }
 
-                if (eingabe.getKind() == Key.Kind.Escape)
+                if (eingabe.getKind() == Key.Kind.Escape)   // if ESC
                 {
-                    System.exit(0);
+                    System.exit(0);     // exit program
                 }
             }
         }
 
         terminal.clearScreen();
 
-        logoKlein();
-        int y_offset = 1;
-        int x_offset = 40;
+        logoKlein();        // init small logo
+        int y_offset = 1;   // coordinates for small logo's start point
+        int x_offset = 40;  // 
 
+        // set foreground color for the small logo
         terminal.applyForegroundColor(logo_Klein.getFirst()[0].farbe.r, logo_Klein.getFirst()[0].farbe.g, logo_Klein.getFirst()[0].farbe.b);
 
+        // output small logo on terminal
         for (int y = 0; y < logo_Klein.size(); y++)
         {
             terminal.moveCursor(x_offset, y_offset);
@@ -59,7 +61,7 @@ public class Startbildschirm
             y_offset++;
         }
 
-        x_offset += 27;
+        x_offset += 27; // move cursor to the right of the just printed logo
         y_offset = 1;
         terminal.moveCursor(x_offset, y_offset);
         for (char temp : "Hochschule".toCharArray())
@@ -81,11 +83,11 @@ public class Startbildschirm
             terminal.putCharacter(temp);
         }
 
-        terminal.applyForegroundColor(255, 255, 255);
+        terminal.applyForegroundColor(255, 255, 255);   // reset foreground color to white
 
         x_offset = 40;
 
-        y_offset = 7;
+        y_offset = 7;   // print various informations to the right of the field
         terminal.moveCursor(x_offset, y_offset);
         for (char temp : "Informatik/Mathematik".toCharArray())
         {
@@ -123,7 +125,7 @@ public class Startbildschirm
         int x_offset = 14;
 
         try
-        {
+        {   // print big logo to terminal first time
             Thread.sleep(500);
 
             terminal.clearScreen();
@@ -143,7 +145,7 @@ public class Startbildschirm
             }
 
             for (int intro = y_offset; y_offset > 0; y_offset--)
-            {
+            {   // move big logo to final place
                 terminal.clearScreen();
 
                 for (int y = 0; y < logo.size(); y++)
@@ -160,6 +162,7 @@ public class Startbildschirm
                 Thread.sleep(25);
             }
 
+            // print options to choose from
             terminal.applyForegroundColor(0, 100, 255);
             terminal.moveCursor(x_offset, y_offset + 20);
 
@@ -177,6 +180,7 @@ public class Startbildschirm
                 Thread.sleep(25);
             }
 
+            // print program name
             terminal.moveCursor(x_offset + 23, y_offset + 25);
 
             terminal.applyForegroundColor(148, 0, 211);
@@ -210,6 +214,7 @@ public class Startbildschirm
                 Thread.sleep(25);
             }
 
+            // print version String from Tetris.java's top
             terminal.moveCursor(x_offset + 23, y_offset + 26);
             terminal.applyForegroundColor(255, 255, 255);
 
@@ -218,6 +223,7 @@ public class Startbildschirm
                 terminal.putCharacter(temp);
             }
 
+            // print creators names
             terminal.moveCursor(0, 29);
             terminal.applyForegroundColor(255, 255, 255);
 
@@ -239,7 +245,7 @@ public class Startbildschirm
         terminal.clearScreen();
 
         try
-        {
+        {   // print a primitive progress bar
             terminal.moveCursor(39, 14);
             for (int i = 0; i < 20; i++)
             {
@@ -270,6 +276,8 @@ public class Startbildschirm
     public static void initLogo()
     {
 
+        // init big logo: put for each empty field a pointer to the instance for the empty field
+        //                and for each red one a pointer to the instance for the red field
         Zelle leer = new Zelle();
         Zelle voll = new Zelle();
 
