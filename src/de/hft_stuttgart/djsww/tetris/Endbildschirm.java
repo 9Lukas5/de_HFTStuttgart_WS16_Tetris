@@ -2,11 +2,7 @@ package de.hft_stuttgart.djsww.tetris;
 
 import com.googlecode.lanterna.input.Key;
 import static de.hft_stuttgart.djsww.tetris.Tetris.*;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.LinkedList;
 
 public class Endbildschirm
