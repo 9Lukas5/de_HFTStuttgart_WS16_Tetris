@@ -7,7 +7,6 @@ import com.googlecode.lanterna.TerminalFacade;
 import com.googlecode.lanterna.terminal.Terminal;
 import com.googlecode.lanterna.input.Key;
 import java.util.Random;
-import java.util.Scanner;
 
 public class Tetris
 {
@@ -16,7 +15,6 @@ public class Tetris
 
     static Terminal             terminal        = TerminalFacade.createTerminal(System.in, System.out, Charset.forName("UTF8"));
     static Spielfeld            spielfeld;
-    static Scanner              in              = new Scanner(System.in);
     static Tetromino            akt_Stein;
     static Tetromino            next_Stein      = new Tetromino_I();
 
