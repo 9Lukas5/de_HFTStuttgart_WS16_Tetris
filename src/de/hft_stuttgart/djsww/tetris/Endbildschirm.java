@@ -17,13 +17,12 @@ public class Endbildschirm
     public static void beendeSpiel()
     {
         // lokale Variablen
-
         String game_Over = "GAME OVER";
 
         terminal.clearScreen();
 
         try
-        {
+        {   // let game over fly into the screen
             terminal.applyForegroundColor(255, 0, 0);
             x_Offset = 46;
             for (int i = 0; y_Offset < 6; y_Offset++)
@@ -109,7 +108,7 @@ public class Endbildschirm
 
     public static void enterName()
     {
-        name = "";
+        name = "";  // init name empty
 
         Key eingabe;
 
@@ -119,9 +118,9 @@ public class Endbildschirm
 
             if (eingabe != null)
             {
-                if (eingabe.getKind() == Key.Kind.Enter)
+                if (eingabe.getKind() == Key.Kind.Enter)    // leave input loop
                 {
-                    if (name.equals(""))
+                    if (name.equals(""))// check if an empty name was given, as we can't use an empty name String to save into the highscores file
                     {
                         name += " ";
                     }
@@ -130,21 +129,21 @@ public class Endbildschirm
 
                 if (eingabe.getKind() == Key.Kind.Escape)
                 {
-                    name = null;
+                    name = null;        // if the playes scores shouldn't be saved, set name null and leave input loop
                     break;
                 }
 
                 if (eingabe.getKind() == Key.Kind.NormalKey)
                 {
-                    name += eingabe.getCharacter();
+                    name += eingabe.getCharacter(); // add the given character at the end of the current name String
                 }
 
                 if (eingabe.getKind() == Key.Kind.Backspace)
                 {
-                    char[] temp = name.toCharArray();
-                    name = "";
+                    char[] temp = name.toCharArray();           // put current name String into char array
+                    name = "";                                  // clear current name String
 
-                    for (int i = 0; i < temp.length - 1; i++)
+                    for (int i = 0; i < temp.length - 1; i++)   // put back all chars except the last one
                     {
                         name += temp[i];
                     }
@@ -154,13 +153,13 @@ public class Endbildschirm
                 terminal.moveCursor(x_Offset, y_Offset);
                 for (int i = 0; i < 30; i++)
                 {
-                    terminal.putCharacter(' ');
+                    terminal.putCharacter(' ');         // overwrite with spaces
                 }
 
                 terminal.moveCursor(x_Offset, y_Offset);
                 for (char temp : name.toCharArray())
                 {
-                    terminal.putCharacter(temp);
+                    terminal.putCharacter(temp);        // print the new state of the name String
                 }
 
             }
@@ -170,16 +169,16 @@ public class Endbildschirm
     public static void leseWerte()
     {
         // local vars
-        BufferedReader br = null;
-        String[] bestenliste = new String[10];
-        String[] splitted;
+        BufferedReader br = null;               // for reading our textfile
+        String[] bestenliste = new String[10];  // size ten as the highscore list should contain only the best 10
+        String[] splitted;                      // after read, split score and name and store it in here
 
         try
         {
-            br = new BufferedReader(new InputStreamReader(new FileInputStream("values.conf")));
+            br = new BufferedReader(new InputStreamReader(new FileInputStream("values.conf"))); // open stored highscores file
             String line;
-            int i = 0;
-            while ((line = br.readLine()) != null && i < 10)
+            int i = 0;      // counter of read lines
+            while ((line = br.readLine()) != null && i < 10)    // read until file end OR 10 lines where read in
             {
                 bestenliste[i] = line;
                 i++;
@@ -195,9 +194,9 @@ public class Endbildschirm
         {
             if (temp != null)
             {
-                splitted = temp.split(":");
-                highscores.add(Integer.valueOf(splitted[0]));
-                namen.add(splitted[1]);
+                splitted = temp.split(":");                     // split all read lines
+                highscores.add(Integer.valueOf(splitted[0]));   // first ist score
+                namen.add(splitted[1]);                         // and second one is name
             }
         }
 
@@ -210,29 +209,29 @@ public class Endbildschirm
 
         for (int i = 0; i < highscores.size(); i++)
         {
-            if (name == null)
+            if (name == null)   // if name is null, none wanted to be entered, therefore stop changing the list
             {
                 break;
             }
-            if (spielfeld.punktestand > highscores.get(i))
+            if (spielfeld.punktestand > highscores.get(i))  // if the player made a score higher than one on the list
             {
-                highscores.add(i, spielfeld.punktestand);
-                namen.add(i, name);
+                highscores.add(i, spielfeld.punktestand);   // add this new score at that position
+                namen.add(i, name);                         // aswell as the name typed in
                 break;
             }
 
-            if (spielfeld.punktestand <= highscores.getLast())
+            if (spielfeld.punktestand <= highscores.getLast())  // if the played score is the same or lower than the last one
             {
-                highscores.addLast(spielfeld.punktestand);
-                namen.addLast(name);
+                highscores.addLast(spielfeld.punktestand);      // add the played score behind the last one
+                namen.addLast(name);                            // aswell as the name typed in
                 break;
             }
         }
 
-        if (highscores.size() == 0)
+        if (highscores.size() == 0)                 // if the highscores list is emtpy
         {
-            highscores.add(spielfeld.punktestand);
-            namen.add(name);
+            highscores.add(spielfeld.punktestand);  // simply add the played score
+            namen.add(name);                        // and given name as first highscore
         }
 
         x_Offset = 45;
@@ -259,8 +258,8 @@ public class Endbildschirm
 
             terminal.moveCursor(x_Offset, y_Offset);
             if (highscores.get(i) == spielfeld.punktestand && namen.get(i).equals(name))
-            {
-                terminal.applyForegroundColor(255, 140, 0);
+            {                                               // if highscore AND name from the list matches the player values
+                terminal.applyForegroundColor(255, 140, 0); // change foreground color to highlight just played score on list
             }
 
             for (char temp : String.valueOf(highscores.get(i)).toCharArray())
@@ -289,15 +288,15 @@ public class Endbildschirm
         {
             File file = new File("values.conf");
 
-            file.createNewFile();
+            file.createNewFile();   // always re-create an empty file
 
             PrintWriter out = new PrintWriter(file, "utf-8");
 
             for (int i = 0; i < highscores.size(); i++)
             {
-                out.print(highscores.get(i));
-                out.print(":");
-                out.println(namen.get(i));
+                out.print(highscores.get(i));   // write score
+                out.print(":");                 // write seperator
+                out.println(namen.get(i));      // write name
             }
             out.flush();
             out.close();
