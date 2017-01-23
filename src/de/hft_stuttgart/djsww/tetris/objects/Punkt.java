@@ -5,8 +5,8 @@ import java.util.Scanner;
 public class Punkt implements Cloneable
 {
 
-    public int x = 0;
-    public int y = 0;
+    public int x = 0;   // an point/coordinate has always an x and y value. We handled these first with
+    public int y = 0;   // int[] and placed x and y in different indexes. That was a bit awkward to use.
 
     @Override
     public Punkt clone()
