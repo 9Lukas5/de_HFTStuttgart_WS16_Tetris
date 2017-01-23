@@ -5,11 +5,9 @@ import java.util.Scanner;
 public class Zelle implements Cloneable
 {
 
-    public Farbe    farbe       = new Farbe();
-
-    public boolean  gesperrt    = false;
-
-    public String   inhalt      = "  ";
+    public Farbe    farbe       = new Farbe();  // In our playfield matrix we needed to for each field:
+    public boolean  gesperrt    = false;        // what color has it, is it locked by another stone,
+    public String   inhalt      = "  ";         // and what's the printable content.
 
     @Override
     public Zelle clone()
