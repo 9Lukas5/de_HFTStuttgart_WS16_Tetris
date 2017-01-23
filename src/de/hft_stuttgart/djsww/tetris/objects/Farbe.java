@@ -5,9 +5,9 @@ import java.util.Scanner;
 public class Farbe implements Cloneable
 {
 
-    public int r = 255;
-    public int g = 255;
-    public int b = 255;
+    public int r = 255; // the lanterna Terminal we used for our Tetris can set
+    public int g = 255; // colors by RGB values. Therefore we made our structured
+    public int b = 255; // variable for colores with an int for each color
 
     @Override
     public Farbe clone()
