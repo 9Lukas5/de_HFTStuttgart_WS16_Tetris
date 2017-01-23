@@ -1,3 +1,17 @@
+/**
+ * Don't ask me WHY EXACTLY we splitted this into two classes, but I guess it was, cause we wanted
+ * to split the things done on the playfield sides and the ones happening IN the matrix itself.
+ * 
+ * So in short:
+ * - We initialize the playfield matrix with empty cells.
+ * - generateing the body around the matrix and the info area
+ * - place the different words above the score and level counters
+ * 
+ * Then we can starting the game logic and use the methods implemented in this object
+ * to lift/drop stones, validate positions and print frames to the terminal
+ */
+
+
 package de.hft_stuttgart.djsww.tetris.objects;
 
 import com.googlecode.lanterna.terminal.Terminal;
@@ -5,8 +19,8 @@ import java.util.LinkedList;
 
 public class Spielfeld extends Brett
 {
-    public      int punktestand = 0;
-    public      int level       = 0;
+    public      int punktestand = 0;    // counter for user score
+    public      int level       = 0;    // counter for the current level == game speed
 
     public Spielfeld(int zeilen, int spalten, Terminal terminal)
     {
@@ -149,7 +163,7 @@ public class Spielfeld extends Brett
 
     public void erhoehePunkte(int zusaetzliche_Punkte)
     {
-        this.punktestand += zusaetzliche_Punkte;
+        this.punktestand += zusaetzliche_Punkte;    // simply add the additional points given as parameter
 
         // lokale Variablen
         Punkt cursor = new Punkt();
@@ -158,7 +172,7 @@ public class Spielfeld extends Brett
         cursor.y = super.start.y + 5;
 
         switch (Integer.toString(this.punktestand).length())
-        {
+        {                                           // dependant on the length of the new score, set the cursor
             case 1:
                 cursor.x++;
 
@@ -175,15 +189,18 @@ public class Spielfeld extends Brett
                 cursor.x++;
         }
 
-        terminal.moveCursor(cursor.x, cursor.y);
+        terminal.moveCursor(cursor.x, cursor.y);    // then move it to that point
         for (char temp : Integer.toString(this.punktestand).toCharArray())
         {
-            terminal.putCharacter(temp);
+            terminal.putCharacter(temp);            // and print the new score into the info area
         }
     }
 
     public void erhoeheLevel()
     {
+        // basically the same as the method above for the score, just that you can't give a paramter how much
+        // the level should be raised. Level-Up is always only one step after the other.
+
         // lokale Variablen
         Punkt cursor = new Punkt();
         cursor.x = this.infoBereich;
@@ -224,50 +241,50 @@ public class Spielfeld extends Brett
     {
         // lokale Variablen
 
-        boolean vollstaendig;
-        int counter = 0;
-        int neuePkt = 0;
+        boolean vollstaendig;   // this get's returned to the caller, so he *can use it if he/she wants to
+        int counter = 0;        // counts how many rows are complete
+        int neuePkt = 0;        // used to sum the new points the user got
 
-        for (int i = 0; i < this.spielfeld.size(); i++)
+        for (int i = 0; i < this.spielfeld.size(); i++)     // check every line
         {
-            vollstaendig = true;
-            for (Zelle zeichen : this.spielfeld.get(i))
+            vollstaendig = true;                            // make boolean on row start true
+            for (Zelle zeichen : this.spielfeld.get(i))     // and check every column of the current row
             {
-                if (!zeichen.gesperrt)
+                if (!zeichen.gesperrt)                      // if we found atleast one cell NOT locked
                 {
-                    vollstaendig = false;
+                    vollstaendig = false;                   // the current row wasn't complete, so set the boolean to false
                 }
             }
 
-            if (vollstaendig)
+            if (vollstaendig)                               // if the current row is complete
             {
-                this.spielfeld.remove(i);
-                this.spielfeld.addFirst(new Zelle[this.spielfeld.get(0).length]);
+                this.spielfeld.remove(i);                   // remove it and add a new one on top with the same length as the others
+                this.spielfeld.addFirst(new Zelle[this.spielfeld.get(0).length]);   // reference for the row length is the current first row
 
                 for (int j = 0; j < this.spielfeld.getFirst().length; j++)
                 {
-                    this.spielfeld.getFirst()[j] = new Zelle();
+                    this.spielfeld.getFirst()[j] = new Zelle(); // fill all columns of the now new inserted first row with new cells
                 }
-                counter++;
-                neuePkt += 10;
+                counter++;                                  // higher the counter complete rows in this cycle
+                neuePkt += 10;                              // each complete row adds 10 points
             }
         }
-        erhoehePunkte(neuePkt * counter);
-        return counter != 0 && neuePkt != 0;
+        erhoehePunkte(neuePkt * counter);                   // after we checked all rows, we multiply the summed points with the counter of complete rows
+        return counter != 0 && neuePkt != 0;                // if the counter and point variables aren't zero, we had atlest one complete row and can return true
     }
 }
 
 class Brett
 {
-    protected           Terminal            terminal;
-    public              LinkedList<Zelle[]> spielfeld   = new LinkedList<>();
-    protected           LinkedList<Zelle[]> next_Stein  = new LinkedList<>();
-    protected   final   int                 STRECKUNG;
-    protected           String              leer        = "";
-    protected           String              gefuellt    = "";
+    protected           Terminal            terminal;                           // here we store the pointer to the terminal instance we get from the constructor
+    public              LinkedList<Zelle[]> spielfeld   = new LinkedList<>();   // THIS is our playfield matrix
+    protected           LinkedList<Zelle[]> next_Stein  = new LinkedList<>();   // that's only a four * four matrix to show the next stone in pipeline
+    protected   final   int                 STRECKUNG;                          // this is two get the output on terminal in correct aspect ratio
+    protected           String              leer        = "";                   // every empty cell get's this as content string
+    protected           String              gefuellt    = "";                   // and every cell with stone on it, get's this one
     
-    protected   int     infoBereich;
-    protected   final   Punkt               start;
+    protected   int     infoBereich;                                            // this stores the x-Coordinate from the first column out on terminal where we can print information
+    protected   final   Punkt               start;                              // this sets marks the upper left corner, on this point everything else is based
 
     public Brett(int zeilen, int spalten, Terminal terminal, Punkt p)
     {
@@ -277,6 +294,10 @@ class Brett
         init(zeilen, spalten);
     }
 
+//==========================================================================================================================\\
+//                                                                                                                          \\
+//==========================================================================================================================\\
+
     public Brett(int zeilen, int spalten, int streckung, Terminal terminal, Punkt p)
     {
         this.STRECKUNG = streckung;
@@ -285,36 +306,46 @@ class Brett
         init(zeilen, spalten);
     }
 
+    /**
+     * The playfield is designed flexible. You could create a new instance with a different count of rows and/or columns.
+     * At first we had a check implemented on program start, if the user maybe started from the console and gave us a few
+     * arguments. If yes, we generated the playfield matrix according to the given params if possible.
+     * 
+     * As we should publish it now, and insert a Logo and other information, we decided to remove this possibility in our
+     * own Tetris, because it would on genertion overwrite the placed information.
+     * 
+     */
+
     private void init(int zeilen, int spalten)
     {
         for (int i = 0; i < this.STRECKUNG; i++)
         {
-            leer += " ";
-            gefuellt += "\u2588";
+            leer += " ";                        // fill our empty and locked content Strings with the correct
+            gefuellt += "\u2588";               // count of chars for the choosen extension
         }
 
-        for (int i = 0; i < zeilen; i++)
+        for (int i = 0; i < zeilen; i++)        // fill every row with a new cell array with the length of the given columns count
         {
             this.spielfeld.add(new Zelle[spalten]);
         }
 
-        for (Zelle[] y : this.spielfeld)
+        for (Zelle[] y : this.spielfeld)        // iterate through each row
         {
             for (int x = 0; x < y.length; x++)
             {
-                y[x] = new Zelle();
-                y[x].inhalt = this.leer;
+                y[x] = new Zelle();             // and fill each column with a new cell and give the newly created cell
+                y[x].inhalt = this.leer;        // as content the generated empty String
             }
         }
 
         for (int i = 0; i < 4; i++)
         {
-            this.next_Stein.add(new Zelle[4]);
+            this.next_Stein.add(new Zelle[4]);  // the matrix for the next stone is always four*four
         }
 
         for (Zelle[] y : this.next_Stein)
         {
-            for (int x = 0; x < y.length; x++)
+            for (int x = 0; x < y.length; x++)  // the same as above, fill each field with a new empty cell and the empty String
             {
                 y[x] = new Zelle();
                 y[x].inhalt = this.leer;
@@ -326,11 +357,29 @@ class Brett
     {
         // lokale Variablen
 
-        Punkt cursor = this.start.clone();
-        cursor.x++;
-        cursor.y++;
+        Punkt cursor = this.start.clone();                              // get a clone of the start point
+        cursor.x++;                                                     // and go one field right and one down, that the cursor is
+        cursor.y++;                                                     // on the top left matrix field (terminal wise)
 
-        for (Zelle[] zeile : this.spielfeld)
+        for (Zelle[] zeile : this.spielfeld)                            // iterate through the matrix rows
+        {
+            this.terminal.moveCursor(cursor.x, cursor.y);               // tell terminal where we want to print next
+
+            for (Zelle zeichen : zeile)                                 // iterate through the columns of current row
+            {                                                           // set for each cell the color reported
+                this.terminal.applyForegroundColor(zeichen.farbe.r, zeichen.farbe.g, zeichen.farbe.b);
+                for (char character : zeichen.inhalt.toCharArray())     // and print the content reported
+                {
+                    this.terminal.putCharacter(character);
+                }
+            }
+            cursor.y++;                                                 // after each row, raise cursors y and repeat until we iterated all rows
+        }
+
+        cursor.x = this.infoBereich;                                    // set cursor to info area start x
+        cursor.y = 14;                                                  // and y to line 14, as we print the next stone from here
+
+        for (Zelle[] zeile : this.next_Stein)                           // same procedure as for the playfield matrix
         {
             this.terminal.moveCursor(cursor.x, cursor.y);
 
@@ -345,25 +394,7 @@ class Brett
             cursor.y++;
         }
 
-        cursor.x = this.infoBereich;
-        cursor.y = 14;
-
-        for (Zelle[] zeile : this.next_Stein)
-        {
-            this.terminal.moveCursor(cursor.x, cursor.y);
-
-            for (Zelle zeichen : zeile)
-            {
-                this.terminal.applyForegroundColor(zeichen.farbe.r, zeichen.farbe.g, zeichen.farbe.b);
-                for (char character : zeichen.inhalt.toCharArray())
-                {
-                    this.terminal.putCharacter(character);
-                }
-            }
-            cursor.y++;
-        }
-
-        this.terminal.applyForegroundColor(255, 255, 255);
+        this.terminal.applyForegroundColor(255, 255, 255);              // after we printed the next frame to the terminal, reset terminal foreground color to white
     }
 
     public void setzeAktivenKoerper(Punkt feld, Farbe farbe)
@@ -372,16 +403,16 @@ class Brett
 
         Zelle temp = this.spielfeld.get(feld.y)[feld.x];
 
-        temp.farbe = farbe;
-        temp.inhalt = this.gefuellt;
+        temp.farbe = farbe;                                             // tell the given cell the new color
+        temp.inhalt = this.gefuellt;                                    // and insert the String for filled cells. But DO NOT lock it. We're still moving it around
     }
 
     public void aendereNaechstenStein(Tetromino nextStein)
     {
         Punkt[] next = nextStein.getKoordinaten(new Punkt());
-        int position = -1;
+        int position = -1;                                              // this is basically a copy of the validation method from the main source file
 
-        while (position != 0)
+        while (position != 0)                                           // but that was the easiest way I saw to place the next stone correctly into the four*four matrix
         {
             for (Punkt zeichen : next)
             {
@@ -474,8 +505,8 @@ class Brett
 
         Zelle temp = this.spielfeld.get(feld.y)[feld.x];
 
-        temp.farbe = new Farbe();
-        temp.inhalt = this.leer;
+        temp.farbe = new Farbe();                                       // create a new instance of color as stock values are white
+        temp.inhalt = this.leer;                                        // insert the String for empty
     }
 
     public void sperreZelle(Punkt feld, Farbe farbe)
@@ -484,8 +515,8 @@ class Brett
 
         Zelle temp = this.spielfeld.get(feld.y)[feld.x];
 
-        temp.gesperrt = true;
-        temp.farbe = farbe;
+        temp.gesperrt = true;                                           // calling this method, means the stone has reached it's final position. Therefore, now we
+        temp.farbe = farbe;                                             // lock the cells apart from applying the given color and insert the String for filled cells.
         temp.inhalt = this.gefuellt;
     }
 }
