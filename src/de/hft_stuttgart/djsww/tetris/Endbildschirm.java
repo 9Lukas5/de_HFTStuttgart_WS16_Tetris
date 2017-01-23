@@ -228,7 +228,7 @@ public class Endbildschirm
             }
         }
 
-        if (highscores.size() == 0)                 // if the highscores list is emtpy
+        if (highscores.size() == 0 && name != null) // if the highscores list is emtpy
         {
             highscores.add(spielfeld.punktestand);  // simply add the played score
             namen.add(name);                        // and given name as first highscore
