@@ -6,7 +6,7 @@ import java.util.LinkedList;
 public class Spielfeld extends Brett
 {
     public      int punktestand = 0;
-    protected   int level       = 0;
+    public      int level       = 0;
 
     public Spielfeld(int zeilen, int spalten, Terminal terminal)
     {

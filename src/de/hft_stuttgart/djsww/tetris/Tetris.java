@@ -22,6 +22,7 @@ public class Tetris
 
     static int                  zyklus          = 0;                        // flow counter
     static int                  verzoegerung    = 750;                      // cycle length
+    static int                  vollstaendig    = 0;                        // counter for completed rows
 
     static TetrisMusikPlayer    music           = new TetrisMusikPlayer();  // new instance of the configured music player
 
@@ -167,14 +168,16 @@ public class Tetris
         start_Pkt.x = startX;                               // set start coordinate to the top middle again for the new stone
         start_Pkt.y = startY;
 
-        if (spielfeld.pruefeVollstaendigeZeilen())          // if we have completed any rows
+        if (spielfeld.pruefeVollstaendigeZeilen())                      // if we have completed any rows
         {
-            if (verzoegerung > 150)                             // and the cycle length is higher than 150ms
-            {
+            vollstaendig++;                                 // higher counter
+            music.playSuccess();                            // play a success sound
+            if (verzoegerung > 150 && vollstaendig == spielfeld.level)  // and the cycle length is higher than 150ms AND we have
+            {                                                           // as many rows completed as the level we are currently on
                 verzoegerung -= 50;                             // lower cycle length
                 spielfeld.erhoeheLevel();                       // and higher level shown on terminal
+                vollstaendig = 0;                               // reset completed row counter
             }
-            music.playSuccess();                            // play a success sound
         }
 
         naechster_StartPkt = start_Pkt.clone();             // make a clone of the new start coordinate
