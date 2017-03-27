@@ -172,10 +172,11 @@ public class Endbildschirm
         BufferedReader br = null;               // for reading our textfile
         String[] bestenliste = new String[10];  // size ten as the highscore list should contain only the best 10
         String[] splitted;                      // after read, split score and name and store it in here
+        WhereAmI myPath = new WhereAmI();
 
         try
         {
-            br = new BufferedReader(new InputStreamReader(new FileInputStream("values.conf"))); // open stored highscores file
+            br = new BufferedReader(new InputStreamReader(new FileInputStream(myPath.myPath + "values.conf"))); // open stored highscores file
             String line;
             int i = 0;      // counter of read lines
             while ((line = br.readLine()) != null && i < 10)    // read until file end OR 10 lines where read in
@@ -284,9 +285,12 @@ public class Endbildschirm
 
     public static void schreibeWerte()
     {
+        // vars
+        WhereAmI myPath = new WhereAmI();
+
         try
         {
-            File file = new File("values.conf");
+            File file = new File(myPath.myPath + "values.conf");
 
             file.createNewFile();   // always re-create an empty file
 
@@ -303,6 +307,51 @@ public class Endbildschirm
         } catch (Exception e)
         {
             e.printStackTrace();
+        }
+    }
+}
+
+/**
+ * 
+ * This inner class is used to get the directory in an absolute path
+ * in which our running jar file is placed.
+ * Using this, because we want to have the highscores file searched and placed
+ * always into the dir the jar is, OS independant.
+ */
+class WhereAmI
+{
+    String myPath;
+
+    public WhereAmI()
+    {
+        String[] temp;
+
+        myPath = getClass().getProtectionDomain().getCodeSource().getLocation().toString();
+
+        if (System.getProperty("os.name").indexOf("win") >= 0 || System.getProperty("os.name").indexOf("Win") >= 0)
+        {
+            temp = myPath.split("/", 2);
+            myPath = temp[1];
+        }
+        else
+        {
+            temp = myPath.split(":", 2);
+            myPath = temp[1];
+        }
+
+        if (myPath.contains(".jar"))
+        {
+            temp = myPath.split("/");
+            myPath = "";
+            for (int i=0; i < temp.length - 1; i++)
+            {
+                myPath += temp[i];
+                myPath += "/";
+            }
+        }
+        else
+        {
+            myPath = "";
         }
     }
 }
