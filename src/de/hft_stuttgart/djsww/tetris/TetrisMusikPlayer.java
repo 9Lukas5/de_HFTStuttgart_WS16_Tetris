@@ -1,44 +1,29 @@
 package de.hft_stuttgart.djsww.tetris;
 
-import java.io.BufferedInputStream;
-import java.io.InputStream;
-import javax.sound.sampled.*;
+import de.wiest_lukas.lib.AACPlayer;
+import java.io.File;
 
 public class TetrisMusikPlayer
 {
 
-    Clip    background_Clip;            // Clip for looping background music
-    boolean mute            = false;    // needed to be able to mute during ingame
+    //Clip    background_Clip;            // Clip for looping background music
+    AACPlayer   backgroundmusic;
+    AACPlayer   success;
+    boolean     mute            = false;    // needed to be able to mute during ingame
 
     public TetrisMusikPlayer()
     {
-        try
-        {
-            InputStream         resource_Path       = getClass().getResourceAsStream("music/background.wav");                   // get background music as RessourceStream from inside the jar
-            AudioInputStream    background_Stream   = AudioSystem.getAudioInputStream(new BufferedInputStream(resource_Path));  // get and AudioInputStream from the resource
-            AudioFormat         background_Format   = background_Stream.getFormat();                                            // check the audioformat from the audiostream
-            DataLine.Info       background_Info     = new DataLine.Info(Clip.class, background_Format);                         // get a LineInfo for the format
-
-            background_Clip = (Clip) AudioSystem.getLine(background_Info);  // get a new Line for the background loop
-            background_Clip.open(background_Stream);                        // open the Line
-
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-        }
+        String absPWD = new MyPath().toString();
+        backgroundmusic = new AACPlayer(new File(absPWD + "music/background.m4a"));
+        success = new AACPlayer(new File(absPWD + "music/line_complete.m4a"));
     }
 
     public void startBackgroundMusik()
     {
         if (!mute)  // check if sounds are muted right now
         {
-            try
-            {
-                background_Clip.loop(Clip.LOOP_CONTINUOUSLY);   // start looping background music
-            } catch (Exception e)
-            {
-                e.printStackTrace();
-            }
+            backgroundmusic.enableLoop();
+            backgroundmusic.play();
         }
     }
 
@@ -46,13 +31,7 @@ public class TetrisMusikPlayer
     {
         if (!mute)  // check if sounds are muted right now
         {
-            try
-            {
-                background_Clip.stop(); // stop background music
-            } catch (Exception e)
-            {
-                e.printStackTrace();
-            }
+            backgroundmusic.stop();
         }
     }
 
@@ -60,22 +39,9 @@ public class TetrisMusikPlayer
     {
         if (!mute)  // check if sounds are muted right now
         {
-            Clip success_Clip = null;   // new Clip for the success sound
-            try
-            {
-                InputStream         resource_Path   = getClass().getResourceAsStream("music/line_complete.wav");                // get success sound from inside jar
-                AudioInputStream    success_Stream  = AudioSystem.getAudioInputStream(new BufferedInputStream(resource_Path));  // get the resourceStream as AdioInputStream
-                AudioFormat         success_Format  = success_Stream.getFormat();                                               // check audioformat
-                DataLine.Info       success_Info    = new DataLine.Info(Clip.class, success_Format);                            // get LineInfo
-
-                success_Clip = (Clip) AudioSystem.getLine(success_Info);    // get a new Line for play the success sound
-                success_Clip.open(success_Stream);                          // open the new Line
-                success_Clip.start();                                       // start the sound
-
-            } catch (Exception e)
-            {
-                e.printStackTrace();
-            }
+            if (success.isPlaying())
+                success.stop();
+            success.play();
         }
     }
 
@@ -92,6 +58,54 @@ public class TetrisMusikPlayer
         {
             mute = false;           // set sounds unmuted
             startBackgroundMusik(); // start background music again
+        }
+    }
+
+    protected static class MyPath
+    {
+        private final String path;
+
+        public MyPath()
+        {
+            // local vars
+            String myPath;
+            String[] temp;
+
+            myPath = getClass().getProtectionDomain().getCodeSource().getLocation().toString();
+
+            if (System.getProperty("os.name").indexOf("win") >= 0 || System.getProperty("os.name").indexOf("Win") >= 0)
+            {
+                temp = myPath.split("/", 2);
+                myPath = temp[1];
+            }
+            else
+            {
+                temp = myPath.split(":", 2);
+                myPath = temp[1];
+            }
+
+            if (myPath.contains(".jar"))
+            {
+                temp = myPath.split("/");
+                myPath = "";
+                for (int i=0; i < temp.length - 1; i++)
+                {
+                    myPath += temp[i];
+                    myPath += "/";
+                }
+            }
+            else
+            {
+                myPath = "";
+            }
+
+            this.path = myPath;
+        }
+
+        @Override
+        public String toString()
+        {
+            return this.path;
         }
     }
 }
