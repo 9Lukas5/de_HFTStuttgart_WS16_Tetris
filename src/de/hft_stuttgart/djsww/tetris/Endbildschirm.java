@@ -21,88 +21,100 @@ public class Endbildschirm
 
         terminal.clearScreen();
 
-        try
-        {   // let game over fly into the screen
-            terminal.applyForegroundColor(255, 0, 0);
-            x_Offset = 46;
-            for (int i = 0; y_Offset < 6; y_Offset++)
+        // let game over fly into the screen
+        terminal.applyForegroundColor(255, 0, 0);
+        x_Offset = 46;
+        for (int i = 0; y_Offset < 6; y_Offset++)
+        {
+            terminal.moveCursor(x_Offset, y_Offset);
+            for (char temp : game_Over.toCharArray())
+            {
+                terminal.putCharacter(temp);
+            }
+            try
+            {
+                Thread.sleep(25);
+            }
+            catch (InterruptedException e)
+            {
+                // Nothing needed to do, Thread sleep was just called
+                // for optical reasons. Has no impact onto the function itself
+                e.printStackTrace();
+            }
+
+            if (y_Offset < 4)
             {
                 terminal.moveCursor(x_Offset, y_Offset);
-                for (char temp : game_Over.toCharArray())
+                for (int j=0; j < game_Over.length(); j++)
                 {
-                    terminal.putCharacter(temp);
+                    terminal.putCharacter(' ');
                 }
-                Thread.sleep(25);
-
-                if (y_Offset < 4)
-                {
-                    terminal.moveCursor(x_Offset, y_Offset);
-                    for (int j=0; j < game_Over.length(); j++)
-                    {
-                        terminal.putCharacter(' ');
-                    }
-                }
-                y_Offset++;
             }
+            y_Offset++;
+        }
 
-            terminal.applyForegroundColor(255, 255, 255);
-            y_Offset = 7;
-            x_Offset = 25;
+        terminal.applyForegroundColor(255, 255, 255);
+        y_Offset = 7;
+        x_Offset = 25;
 
-            terminal.moveCursor(x_Offset, y_Offset);
+        terminal.moveCursor(x_Offset, y_Offset);
 
-            for (char temp : "Deine Punkte: ".toCharArray())
+        for (char temp : "Deine Punkte: ".toCharArray())
+        {
+            terminal.putCharacter(temp);
+            try
             {
-                terminal.putCharacter(temp);
                 Thread.sleep(10);
             }
-
-            terminal.applyForegroundColor(255, 140, 0);
-
-            for (char temp : String.valueOf(spielfeld.punktestand).toCharArray())
+            catch (InterruptedException e)
             {
-                terminal.putCharacter(temp);
+                // Nothing needed to do, Thread sleep was just called
+                // for optical reasons. Has no impact onto the function itself
+                e.printStackTrace();
             }
+        }
 
-            terminal.applyForegroundColor(255, 255, 255);
-            x_Offset += 8;
-            y_Offset += 2;
-            terminal.moveCursor(x_Offset, y_Offset);
+        terminal.applyForegroundColor(255, 140, 0);
 
-            for (char temp : "Name: ".toCharArray())
-            {
-                terminal.putCharacter(temp);
-                x_Offset++;
-            }
-
-            enterName();
-            leseWerte();
-            rangliste();
-            if (name != null)
-            {
-                schreibeWerte();
-            }
-
-            terminal.moveCursor(35, 28);
-            for (char temp : "Zum Beenden beliebige Taste druecken...".toCharArray())
-            {
-                terminal.putCharacter(temp);
-            }
-
-            Key eingabe;
-
-            while (true)
-            {
-                eingabe = terminal.readInput();
-                if (eingabe != null)
-                {
-                    System.exit(0);
-                }
-            }
-
-        } catch (Exception e)
+        for (char temp : String.valueOf(spielfeld.punktestand).toCharArray())
         {
-            e.printStackTrace();
+            terminal.putCharacter(temp);
+        }
+
+        terminal.applyForegroundColor(255, 255, 255);
+        x_Offset += 8;
+        y_Offset += 2;
+        terminal.moveCursor(x_Offset, y_Offset);
+
+        for (char temp : "Name: ".toCharArray())
+        {
+            terminal.putCharacter(temp);
+            x_Offset++;
+        }
+
+        enterName();
+        leseWerte();
+        rangliste();
+        if (name != null)
+        {
+            schreibeWerte();
+        }
+
+        terminal.moveCursor(35, 28);
+        for (char temp : "Zum Beenden beliebige Taste druecken...".toCharArray())
+        {
+            terminal.putCharacter(temp);
+        }
+
+        Key eingabe;
+
+        while (true)
+        {
+            eingabe = terminal.readInput();
+            if (eingabe != null)
+            {
+                System.exit(0);
+            }
         }
     }
 
