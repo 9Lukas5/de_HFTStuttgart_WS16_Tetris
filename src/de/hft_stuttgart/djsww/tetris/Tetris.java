@@ -11,7 +11,7 @@ import java.util.Random;
 public class Tetris
 {
 
-    static String               version         = "v1.2.0";                // version String shown on program start
+    static String               version         = "v2.0.0";                // version String shown on program start
 
     static Terminal             terminal        = TerminalFacade.createTerminal(System.in, System.out, Charset.forName("UTF8"));
     static Spielfeld            spielfeld;                                  // playfield variable
