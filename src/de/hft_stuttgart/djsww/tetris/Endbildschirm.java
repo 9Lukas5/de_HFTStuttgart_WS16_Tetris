@@ -287,26 +287,24 @@ public class Endbildschirm
     {
         // vars
         WhereAmI myPath = new WhereAmI();
+        File file = new File(myPath.myPath + "values.conf");
 
-        try
+        try (PrintWriter out = new PrintWriter(file, "utf-8"))
         {
-            File file = new File(myPath.myPath + "values.conf");
-
-            file.createNewFile();   // always re-create an empty file
-
-            PrintWriter out = new PrintWriter(file, "utf-8");
-
             for (int i = 0; i < highscores.size(); i++)
             {
                 out.print(highscores.get(i));   // write score
                 out.print(":");                 // write seperator
                 out.println(namen.get(i));      // write name
             }
-            out.flush();
-            out.close();
-        } catch (Exception e)
+        }
+        catch (FileNotFoundException e)
         {
             e.printStackTrace();
+        }
+        catch (UnsupportedEncodingException e)
+        {
+            System.err.println("Dude what the heck of a System doesn't support utf-8??");
         }
     }
 }
