@@ -46,6 +46,9 @@ public class Tetromino_S extends Tetromino
                 koordinaten[3].y = start.y + 1;
                 break;
 
+            default:
+                throw new RuntimeException("rotate S failed catastrophically!");
+
         }
         return koordinaten;
     }

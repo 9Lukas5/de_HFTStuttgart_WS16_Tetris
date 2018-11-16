@@ -54,7 +54,7 @@ public class TetrisMusikPlayer
             return;                 // leave method
         }
 
-        if (mute)  // check if sounds are muted right now
+        else        // check if sounds are muted right now
         {
             mute = false;           // set sounds unmuted
             startBackgroundMusik(); // start background music again
@@ -84,22 +84,18 @@ public class TetrisMusikPlayer
                 myPath = temp[1];
             }
 
+            StringBuilder returnPath = new StringBuilder();
             if (myPath.contains(".jar"))
             {
                 temp = myPath.split("/");
-                myPath = "";
                 for (int i=0; i < temp.length - 1; i++)
                 {
-                    myPath += temp[i];
-                    myPath += "/";
+                    returnPath.append(temp[i]);
+                    returnPath.append("/");
                 }
             }
-            else
-            {
-                myPath = "";
-            }
 
-            this.path = myPath;
+            this.path = returnPath.toString();
         }
 
         @Override
