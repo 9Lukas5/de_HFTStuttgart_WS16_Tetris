@@ -169,24 +169,23 @@ public class Endbildschirm
     public static void leseWerte()
     {
         // local vars
-        BufferedReader br = null;               // for reading our textfile
         String[] bestenliste = new String[10];  // size ten as the highscore list should contain only the best 10
         String[] splitted;                      // after read, split score and name and store it in here
         WhereAmI myPath = new WhereAmI();
 
-        try
+        try (BufferedReader br = new BufferedReader(
+                new InputStreamReader(
+                        new FileInputStream(myPath.myPath + "values.conf"), "utf-8"))
+                )
         {
-            br = new BufferedReader(new InputStreamReader(new FileInputStream(myPath.myPath + "values.conf"))); // open stored highscores file
             String line;
-            int i = 0;      // counter of read lines
-            while ((line = br.readLine()) != null && i < 10)    // read until file end OR 10 lines where read in
+            for (int i=0; (line = br.readLine()) != null && i < 10; i++)    // read until file end OR 10 lines where read in
             {
                 bestenliste[i] = line;
-                i++;
             }
-            br.close();
 
-        } catch (Exception e)
+        }
+        catch (IOException e)
         {
             e.printStackTrace();
         }
