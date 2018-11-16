@@ -17,7 +17,7 @@ public class Zelle implements Cloneable
             return (Zelle) super.clone();
         } catch (CloneNotSupportedException e)
         {
-            Scanner in = new Scanner(System.in);
+            Scanner in = new Scanner(System.in, "utf-8");
             e.printStackTrace();
             System.out.print("Enter zum fortsetzen...");
             in.nextLine();
