@@ -300,6 +300,9 @@ public class Tetris
                 case 0:
                     start_Pkt = naechster_StartPkt;     // if the validation was successful, set the new start point 
                     break;
+
+                default:
+                    throw new RuntimeException("something went totally wrong here");
             }
         }
 
