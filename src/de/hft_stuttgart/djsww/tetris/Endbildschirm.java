@@ -37,7 +37,7 @@ public class Endbildschirm
                 if (y_Offset < 4)
                 {
                     terminal.moveCursor(x_Offset, y_Offset);
-                    for (char temp : game_Over.toCharArray())
+                    for (int j=0; j < game_Over.length(); j++)
                     {
                         terminal.putCharacter(' ');
                     }
