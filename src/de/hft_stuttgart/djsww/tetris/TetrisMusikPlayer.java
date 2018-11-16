@@ -54,7 +54,7 @@ public class TetrisMusikPlayer
             return;                 // leave method
         }
 
-        if (mute)  // check if sounds are muted right now
+        else        // check if sounds are muted right now
         {
             mute = false;           // set sounds unmuted
             startBackgroundMusik(); // start background music again
