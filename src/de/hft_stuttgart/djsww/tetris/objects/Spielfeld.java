@@ -185,7 +185,7 @@ public class Spielfeld extends Brett
             case 4:
                 cursor.x++;
 
-            case 5:
+            default:
                 cursor.x++;
         }
 
@@ -226,7 +226,7 @@ public class Spielfeld extends Brett
             case 3:
                 cursor.x++;
 
-            case 4:
+            default:
                 cursor.x++;
         }
 

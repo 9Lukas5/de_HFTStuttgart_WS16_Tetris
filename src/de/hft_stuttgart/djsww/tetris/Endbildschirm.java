@@ -21,88 +21,100 @@ public class Endbildschirm
 
         terminal.clearScreen();
 
-        try
-        {   // let game over fly into the screen
-            terminal.applyForegroundColor(255, 0, 0);
-            x_Offset = 46;
-            for (int i = 0; y_Offset < 6; y_Offset++)
+        // let game over fly into the screen
+        terminal.applyForegroundColor(255, 0, 0);
+        x_Offset = 46;
+        for (int i = 0; y_Offset < 6; y_Offset++)
+        {
+            terminal.moveCursor(x_Offset, y_Offset);
+            for (char temp : game_Over.toCharArray())
+            {
+                terminal.putCharacter(temp);
+            }
+            try
+            {
+                Thread.sleep(25);
+            }
+            catch (InterruptedException e)
+            {
+                // Nothing needed to do, Thread sleep was just called
+                // for optical reasons. Has no impact onto the function itself
+                e.printStackTrace();
+            }
+
+            if (y_Offset < 4)
             {
                 terminal.moveCursor(x_Offset, y_Offset);
-                for (char temp : game_Over.toCharArray())
+                for (int j=0; j < game_Over.length(); j++)
                 {
-                    terminal.putCharacter(temp);
+                    terminal.putCharacter(' ');
                 }
-                Thread.sleep(25);
-
-                if (y_Offset < 4)
-                {
-                    terminal.moveCursor(x_Offset, y_Offset);
-                    for (char temp : game_Over.toCharArray())
-                    {
-                        terminal.putCharacter(' ');
-                    }
-                }
-                y_Offset++;
             }
+            y_Offset++;
+        }
 
-            terminal.applyForegroundColor(255, 255, 255);
-            y_Offset = 7;
-            x_Offset = 25;
+        terminal.applyForegroundColor(255, 255, 255);
+        y_Offset = 7;
+        x_Offset = 25;
 
-            terminal.moveCursor(x_Offset, y_Offset);
+        terminal.moveCursor(x_Offset, y_Offset);
 
-            for (char temp : "Deine Punkte: ".toCharArray())
+        for (char temp : "Deine Punkte: ".toCharArray())
+        {
+            terminal.putCharacter(temp);
+            try
             {
-                terminal.putCharacter(temp);
                 Thread.sleep(10);
             }
-
-            terminal.applyForegroundColor(255, 140, 0);
-
-            for (char temp : String.valueOf(spielfeld.punktestand).toCharArray())
+            catch (InterruptedException e)
             {
-                terminal.putCharacter(temp);
+                // Nothing needed to do, Thread sleep was just called
+                // for optical reasons. Has no impact onto the function itself
+                e.printStackTrace();
             }
+        }
 
-            terminal.applyForegroundColor(255, 255, 255);
-            x_Offset += 8;
-            y_Offset += 2;
-            terminal.moveCursor(x_Offset, y_Offset);
+        terminal.applyForegroundColor(255, 140, 0);
 
-            for (char temp : "Name: ".toCharArray())
-            {
-                terminal.putCharacter(temp);
-                x_Offset++;
-            }
-
-            enterName();
-            leseWerte();
-            rangliste();
-            if (name != null)
-            {
-                schreibeWerte();
-            }
-
-            terminal.moveCursor(35, 28);
-            for (char temp : "Zum Beenden beliebige Taste druecken...".toCharArray())
-            {
-                terminal.putCharacter(temp);
-            }
-
-            Key eingabe;
-
-            while (true)
-            {
-                eingabe = terminal.readInput();
-                if (eingabe != null)
-                {
-                    System.exit(0);
-                }
-            }
-
-        } catch (Exception e)
+        for (char temp : String.valueOf(spielfeld.punktestand).toCharArray())
         {
-            e.printStackTrace();
+            terminal.putCharacter(temp);
+        }
+
+        terminal.applyForegroundColor(255, 255, 255);
+        x_Offset += 8;
+        y_Offset += 2;
+        terminal.moveCursor(x_Offset, y_Offset);
+
+        for (char temp : "Name: ".toCharArray())
+        {
+            terminal.putCharacter(temp);
+            x_Offset++;
+        }
+
+        enterName();
+        leseWerte();
+        rangliste();
+        if (name != null)
+        {
+            schreibeWerte();
+        }
+
+        terminal.moveCursor(35, 28);
+        for (char temp : "Zum Beenden beliebige Taste druecken...".toCharArray())
+        {
+            terminal.putCharacter(temp);
+        }
+
+        Key eingabe;
+
+        while (true)
+        {
+            eingabe = terminal.readInput();
+            if (eingabe != null)
+            {
+                System.exit(0);
+            }
         }
     }
 
@@ -169,24 +181,23 @@ public class Endbildschirm
     public static void leseWerte()
     {
         // local vars
-        BufferedReader br = null;               // for reading our textfile
         String[] bestenliste = new String[10];  // size ten as the highscore list should contain only the best 10
         String[] splitted;                      // after read, split score and name and store it in here
         WhereAmI myPath = new WhereAmI();
 
-        try
+        try (BufferedReader br = new BufferedReader(
+                new InputStreamReader(
+                        new FileInputStream(myPath.myPath + "values.conf"), "utf-8"))
+                )
         {
-            br = new BufferedReader(new InputStreamReader(new FileInputStream(myPath.myPath + "values.conf"))); // open stored highscores file
             String line;
-            int i = 0;      // counter of read lines
-            while ((line = br.readLine()) != null && i < 10)    // read until file end OR 10 lines where read in
+            for (int i=0; (line = br.readLine()) != null && i < 10; i++)    // read until file end OR 10 lines where read in
             {
                 bestenliste[i] = line;
-                i++;
             }
-            br.close();
 
-        } catch (Exception e)
+        }
+        catch (IOException e)
         {
             e.printStackTrace();
         }
@@ -287,26 +298,24 @@ public class Endbildschirm
     {
         // vars
         WhereAmI myPath = new WhereAmI();
+        File file = new File(myPath.myPath + "values.conf");
 
-        try
+        try (PrintWriter out = new PrintWriter(file, "utf-8"))
         {
-            File file = new File(myPath.myPath + "values.conf");
-
-            file.createNewFile();   // always re-create an empty file
-
-            PrintWriter out = new PrintWriter(file, "utf-8");
-
             for (int i = 0; i < highscores.size(); i++)
             {
                 out.print(highscores.get(i));   // write score
                 out.print(":");                 // write seperator
                 out.println(namen.get(i));      // write name
             }
-            out.flush();
-            out.close();
-        } catch (Exception e)
+        }
+        catch (FileNotFoundException e)
         {
             e.printStackTrace();
+        }
+        catch (UnsupportedEncodingException e)
+        {
+            System.err.println("Dude what the heck of a System doesn't support utf-8??");
         }
     }
 }
